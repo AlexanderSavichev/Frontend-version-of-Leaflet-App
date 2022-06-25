@@ -1,25 +1,37 @@
-import { useState } from 'react'
 import {MapContainer,Marker,Popup,TileLayer,useMapEvents} from 'react-leaflet'
 import L from 'leaflet';
 import './map.css';
+import * as React from 'react';
 
 L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.5.0/dist/images/";
 var popup = L.popup();
 
 
-
 function LocationMarker() {
-    
 
-    
-  const [position, setPosition] = useState(null)
+  const [position, setPosition] = React.useState([])
   const map = useMapEvents({
     
     click(e) {
-      //map.locate()
       const { lat, lng } = e.latlng;
+      const coord = {lat,lng};
+      const template = <button  class="edit" id="buttonEdit" type="button" onClick={handleClick}>Submit</button>;
+      const textbox = <input id="time" type="text" placeholder="Enter something" />;
+
+      const handleClick=()=>{
+        fetch("http://localhost:8080/mapModel/add",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify(coord)
+        }).then(()=>{
+            console.log("New task added", coord)
+            setPosition([...position,coord]);
+        })
+    }
   console.log(lat, lng);
-  L.marker(e.latlng).addTo(map);
+  L.marker(e.latlng)
+  .bindPopup(textbox + '</br>' + template)
+  .addTo(map);
     },
   })
 
