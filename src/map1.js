@@ -15,8 +15,7 @@ function LocationMarker() {
     click(e) {
       const { lat, lng } = e.latlng;
       const coord = {lat,lng};
-      const template = <button  class="edit" id="buttonEdit" type="button" onClick={handleClick}>Submit</button>;
-      const textbox = <input id="time" type="text" placeholder="Enter something" />;
+      
 
       const handleClick=()=>{
         fetch("http://localhost:8080/mapModel/add",{
@@ -28,6 +27,8 @@ function LocationMarker() {
             setPosition([...position,coord]);
         })
     }
+    const template = <button  class="edit" id="buttonEdit" type="button" onClick={handleClick}>Submit</button>;
+      const textbox = <input id="time" type="text" placeholder="Enter something" />;
   console.log(lat, lng);
   L.marker(e.latlng)
   .bindPopup(textbox + '</br>' + template)
