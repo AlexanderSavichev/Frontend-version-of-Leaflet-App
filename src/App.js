@@ -1,9 +1,9 @@
-import MapComponent from "./map1";
+import EventsExample from "./map";
 import './App.css';
 
 function App() {
   return (
-    <MapComponent />
+    <EventsExample />
   );
 }
 
