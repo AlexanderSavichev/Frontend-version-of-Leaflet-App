@@ -1,4 +1,4 @@
-
+import * as React from 'react';
 import { useState } from 'react'
 import {
     MapContainer,
@@ -13,11 +13,12 @@ import './map.css';
 L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.5.0/dist/images/";
 function LocationMarker() {
     const [position, setPosition] = useState(null)
+    const [description, setDescription]=React.useState('')
     const [marker, setMarker] = useState(null)
-
+    const [tasks, setTasks]=React.useState([])
     const handleClick=()=>{
         const { lat, lng } = position;
-        let coord = {lat, lng}
+        let coord = {lat, lng, description};
         console.log("handleClick() " + JSON.stringify(coord))
         fetch("http://localhost:8080/mapModel/add",{
             method:"POST",
@@ -25,11 +26,18 @@ function LocationMarker() {
             body:JSON.stringify(coord)
         }).then(()=>{
             console.log("New task added", coord)
-            setPosition([...position,coord]);
+            setTasks([...tasks,coord]);
+              fetch("http://localhost:8080/mapModel/showPositions")
+              .then(res=>res.json())
+              .then((result)=>{
+                setTasks(result);
+                for (const item of result){
+                  L.marker([item.lat, item.lng]).addTo(map);
+                }
+              }
+            )
         })
     }
-
-
     const map = useMapEvents({
         click(e) {
             console.log("click()" + e)
@@ -43,20 +51,18 @@ function LocationMarker() {
                 setMarker(m)
             }
             setPosition(e.latlng)
-
         }
     })
-
     return position === null ? null : (
         <Marker position={position}>
             console.log(position);
-            <Popup><input id="time" type="text" placeholder="Enter something" />
+            <Popup><input id="time" type="text" placeholder="Enter something" value={description}
+      onChange={(e)=>setDescription(e.target.value)}/>
                 <button  class="edit" id="buttonEdit" type="button" onClick={handleClick} >Submit</button>
             </Popup>
         </Marker>
     )
 }
-
 function EventsExample() {
     return (
         <MapContainer center={{ lat: 59.9311, lng:30.3609 }} zoom={12}>
