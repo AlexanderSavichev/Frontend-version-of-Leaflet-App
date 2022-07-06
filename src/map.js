@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
     MapContainer,
     Marker,
@@ -13,6 +13,9 @@ import './map.css';
 L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.5.0/dist/images/";
 function LocationMarker() {
 
+
+    useEffect(
+        ()=>{
     fetch("http://localhost:8080/mapModel/showPositions")
     .then(res=>res.json())
     .then((result)=>{
@@ -25,6 +28,9 @@ function LocationMarker() {
       }
     }
   )
+}
+,[])
+
 
     const [position, setPosition] = useState(null)
     const [description, setDescription]=React.useState('')
