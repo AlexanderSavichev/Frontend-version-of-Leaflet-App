@@ -12,6 +12,20 @@ import './map.css';
 
 L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.5.0/dist/images/";
 function LocationMarker() {
+
+    fetch("http://localhost:8080/mapModel/showPositions")
+    .then(res=>res.json())
+    .then((result)=>{
+      setTasks(result);
+      for (const item of result){
+        var LPopup = L.popup().setContent(item.description);
+        L.marker([item.lat, item.lng])
+        .bindPopup(LPopup)
+        .addTo(map);
+      }
+    }
+  )
+
     const [position, setPosition] = useState(null)
     const [description, setDescription]=React.useState('')
     const [marker, setMarker] = useState(null)
@@ -32,7 +46,10 @@ function LocationMarker() {
               .then((result)=>{
                 setTasks(result);
                 for (const item of result){
-                  L.marker([item.lat, item.lng]).addTo(map);
+                    var LPopup = L.popup().setContent(item.description);
+                  L.marker([item.lat, item.lng])
+                  .bindPopup(LPopup)
+                  .addTo(map);
                 }
               }
             )
@@ -64,7 +81,11 @@ function LocationMarker() {
     )
 }
 function EventsExample() {
+  
     return (
+
+
+        
         <MapContainer center={{ lat: 59.9311, lng:30.3609 }} zoom={12}>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
